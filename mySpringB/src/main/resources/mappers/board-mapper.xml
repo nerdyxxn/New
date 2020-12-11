@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- namespace 는 dao에서 호출(접근) 할때 사용됨. -->
+<mapper namespace="Board">
+	<resultMap type="Board" id="resultBoard">
+		<!-- property에는 vo의 필드명,   column에는 db table의 컬럼명 -->
+		<id property="board_num" column="board_num"/>
+		<result property="board_writer" column="board_writer"/>
+		<result property="board_title" column="board_title"/>
+		<result property="board_content" column="board_content"/>
+		<result property="board_file" column="board_file"/>
+		<result property="board_pwd" column="board_pwd"/>
+		<result property="read_count" column="read_count"/>
+		<result property="regDate" column="regDate"/>
+	</resultMap>
+
+	<!-- 게시글 전체 개수 조회 -->
+	<select id="listCount" resultType="int">
+		select count(*) from board
+	</select>
+	
+	<!-- 게시글 삽입  -->
+	<insert id="insertBoard" parameterType="string" flushCache="true" statementType="PREPARED">
+		insert into board values
+			('BO'||TO_CHAR(SYSDATE,'RRMMDD')||LPAD(BOARD_SEQ.NEXTVAL,2,'0'),
+			#{board_writer}, #{board_title}, 0,
+			SYSDATE, #{board_content},
+			#{board_file},
+			#{board_pwd})
+	</insert>
+
+	<select id="selectList" resultType="arraylist" resultMap="resultBoard">
+		select * from board
+	</select>  
+
+</mapper>
